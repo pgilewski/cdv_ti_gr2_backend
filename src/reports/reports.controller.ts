@@ -18,6 +18,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 import { ReportsService } from './reports.service';
 import { CreateWorkDayDto } from './dto/create-workday-dto';
+import { UpdateWorkDayDto } from './dto/update-workday-dto';
 
 @Controller('reports')
 export class ReportsController {
@@ -52,37 +53,17 @@ export class ReportsController {
 
   @Roles(Role.Moderator)
   @Post('daily')
-  create(@Body() createWorkDayDto: CreateWorkDayDto) {
-    return this.reportsService.createWorkDay(createWorkDayDto);
+  create(@Body() createWorkDayData: CreateWorkDayDto) {
+    return this.reportsService.createWorkDay(createWorkDayData);
   }
 
-  @Post(':userId/:workDayId')
-  async addTaskHourToWorkDay(
-    @Param('userId') userId: string,
-    @Param('workDayId') workDayId: string,
-    @Body() taskHourData: any,
-  ) {
-    return this.reportsService.addTaskHourToWorkDay(
-      +userId,
-      +workDayId,
-      taskHourData,
-    );
+  @Roles(Role.Moderator, Role.Administrator)
+  @Patch('daily/:id')
+  update(@Param('id') id: string, @Body() updateWorkDayData: UpdateWorkDayDto) {
+    return this.reportsService.updateWorkDay(+id, updateWorkDayData);
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.reportsService.findOne(+id);
-  // }
-
-  // // @Roles(Role.Admin)
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateReportDto: UpdateReportDto) {
-  //   return this.reportsService.update(+id, updateReportDto);
-  // }
-
-  // // @Roles(Role.Admin)
-  // // @Permissions(Permission.DeleteReport)
-  // // @Policies(new FrameworkContributorPolicy())
+  // @Roles(Role.Administrator)
   // @Delete(':id')
   // remove(@Param('id') id: string) {
   //   return this.reportsService.remove(+id);

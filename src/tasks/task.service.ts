@@ -28,22 +28,45 @@ export class TaskService {
   }
 
   async getTasksByUserId(userId: number) {
-    const x = this.prisma.user.findUnique({
+    const x = await this.prisma.user.findUnique({
       where: { id: userId },
       include: {
-        userProjects: {
+        userTasks: {
           select: {
-            project: {
+            task: {
               select: {
-                tasks: true,
+                name: true,
+                description: true,
+                project: {
+                  // Get the project details for standalone tasks
+                  select: {
+                    title: true,
+                    description: true,
+                  },
+                },
               },
             },
           },
         },
-        userTasks: true,
+        userProjects: {
+          // Get the tasks assigned to the user through a project
+          select: {
+            project: {
+              select: {
+                title: true,
+                description: true,
+                tasks: {
+                  select: {
+                    name: true,
+                    description: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
-    console.log(x);
     return x;
   }
 }

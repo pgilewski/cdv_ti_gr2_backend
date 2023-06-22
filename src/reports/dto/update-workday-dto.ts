@@ -4,7 +4,7 @@ import { IsDate, IsOptional, IsBoolean, IsString } from 'class-validator';
 export class UpdateWorkDayDto {
   @IsDate()
   @IsOptional()
-  date?: Date;
+  date?: string;
 
   @IsBoolean()
   @IsOptional()

@@ -1,4 +1,10 @@
-import { Injectable, CanActivate, ExecutionContext, Type, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  Type,
+  ForbiddenException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
 import { REQUEST_USER_KEY } from '../../constants';
@@ -9,7 +15,10 @@ import { PolicyHandlerStorage } from '../policies/policy-handlers.storage';
 
 @Injectable()
 export class PoliciesGuard implements CanActivate {
-  constructor(private readonly reflector: Reflector, private readonly policyHandlerStorage: PolicyHandlerStorage) {}
+  constructor(
+    private readonly reflector: Reflector,
+    private readonly policyHandlerStorage: PolicyHandlerStorage,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const policies = this.reflector.getAllAndOverride<Policy[]>(POLICIES_KEY, [
@@ -17,15 +26,21 @@ export class PoliciesGuard implements CanActivate {
       context.getClass(),
     ]);
     if (policies) {
-      const user: ActiveUserData = context.switchToHttp().getRequest()[REQUEST_USER_KEY];
+      const user: ActiveUserData = context.switchToHttp().getRequest()[
+        REQUEST_USER_KEY
+      ];
       await Promise.all(
         policies.map((policy) => {
-          const policyHandler = this.policyHandlerStorage.get(policy.constructor as Type);
+          const policyHandler = this.policyHandlerStorage.get(
+            policy.constructor as Type,
+          );
           if (!policyHandler) {
-            throw new Error(`PolicyHandler for policy ${policy.constructor.name} not found`);
+            throw new Error(
+              `PolicyHandler for policy ${policy.constructor.name} not found`,
+            );
           }
           return policyHandler.handle(policy, user);
-        })
+        }),
       ).catch((err) => {
         throw new ForbiddenException(err.message);
       });

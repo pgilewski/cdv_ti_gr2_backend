@@ -2,17 +2,18 @@ import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
 
-import { CreateTaskHourDto } from './dto/create-taskhour-dta';
+import { CreateTaskHourDto } from '../taskhour/dto/task-hour.dto';
 import { CreateWorkDayDto } from './dto/create-workday-dto';
-import { UpdateTaskHourDto } from './dto/update-taskhour-dto';
-import { UpdateWorkDayDto } from './dto/update-workday-dto';
+// import { UpdateTaskHourDto } from './dto/update-taskhour-dto';
+// import { UpdateWorkDayDto } from './dto/update-workday-dto';
 import { Prisma, WorkDay } from '@prisma/client';
+import { UpdateWorkDayDto } from './dto/update-workday-dto';
 
 @Injectable()
 export class ReportsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getWorkDay(day?: string, userId?: number): Promise<WorkDay[]> {
+  async getWorkDay(day?: string, userId?: number): Promise<WorkDay> {
     const whereClause: Prisma.WorkDayWhereInput = {};
 
     if (day) {
@@ -23,10 +24,24 @@ export class ReportsService {
       whereClause.userId = Number(userId);
     }
     console.log(whereClause);
-    return this.prisma.workDay.findMany({
+
+    return this.prisma.workDay.findFirst({
       where: whereClause,
       include: {
-        hours: true,
+        taskHours: {
+          include: {
+            task: {
+              include: {
+                project: {
+                  select: {
+                    title: true,
+                    description: true,
+                  },
+                },
+              },
+            },
+          },
+        },
         comments: true,
       },
     });
@@ -39,16 +54,16 @@ export class ReportsService {
     });
   }
 
-  // async updateWorkDay(id: number, data: UpdateWorkDayDto) {
-  //   return await this.prisma.workDay.update({
-  //     where: { id },
-  //     data,
-  //   });
-  // }
+  async updateWorkDay(id: number, data: UpdateWorkDayDto) {
+    return await this.prisma.workDay.update({
+      where: { id },
+      data,
+    });
+  }
 
-  // async createTaskHour(data: CreateTaskHourDto) {
-  //   return await this.prisma.taskHour.create({ data });
-  // }
+  async createTaskHour(data: CreateTaskHourDto) {
+    return await this.prisma.taskHour.create({ data });
+  }
   async addTaskHourToWorkDay(
     userId: number,
     workDayId: number,
@@ -79,10 +94,10 @@ export class ReportsService {
     });
   }
 
-  async updateTaskHour(id: number, data: UpdateTaskHourDto) {
-    return await this.prisma.taskHour.update({
-      where: { id },
-      data,
-    });
-  }
+  // async updateTaskHour(id: number, data: UpdateTaskHourDto) {
+  //   return await this.prisma.taskHour.update({
+  //     where: { id },
+  //     data,
+  //   });
+  // }
 }

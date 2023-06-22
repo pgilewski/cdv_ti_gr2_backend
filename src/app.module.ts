@@ -4,6 +4,7 @@ import { ProjectModule } from './projects/project.module';
 
 import { ReportsModule } from './reports/reports.module';
 import { ResourcesModule } from './resources/resources.module';
+import { TaskHourModule } from './taskhour/task-hour.module';
 import { TaskModule } from './tasks/task.module';
 import { UsersModule } from './users/users.module';
 
@@ -15,6 +16,7 @@ import { UsersModule } from './users/users.module';
     IamModule,
     ProjectModule,
     TaskModule,
+    TaskHourModule,
   ],
 })
 export class AppModule {}
