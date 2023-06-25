@@ -54,7 +54,6 @@ export class AuthenticationService {
   }
 
   async signIn(signInDto: SignInDto) {
-    console.log('jwtConfiguration', this.jwtConfiguration);
     const user = await this.prisma.user.findUnique({
       where: {
         email: signInDto.email,

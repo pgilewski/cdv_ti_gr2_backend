@@ -28,14 +28,17 @@ export class TaskHourService {
 
     const startTime = parseISO(data.startTime);
     const endTime = parseISO(data.endTime);
-    const duration = differenceInMinutes(endTime, startTime);
+
+    // Calculate duration in milliseconds and convert to minutes
+    const durationInMilliseconds = endTime.getTime() - startTime.getTime();
+    const durationInMinutes = Math.round(durationInMilliseconds / (1000 * 60));
 
     const taskHour = await this.prisma.taskHour.create({
       data: {
         startTime,
         endTime,
         note: data.note,
-        duration,
+        duration: durationInMinutes,
         task: { connect: { id: task.id } },
         workDay: { connect: { id: workDay.id } },
         user: { connect: { id: data.userId } },

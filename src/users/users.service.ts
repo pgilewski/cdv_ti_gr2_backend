@@ -33,9 +33,27 @@ export class UsersService {
     });
   }
 
+  async getUsersEmailsAndIds(
+    email: string,
+  ): Promise<{ value: string; id: number }[]> {
+    const users = await this.prisma.user.findMany({
+      where: {
+        email: {
+          startsWith: email,
+        },
+      },
+      select: {
+        email: true,
+        id: true,
+      },
+    });
+
+    return users.map((user) => ({ value: user.email, id: user.id }));
+  }
+
   async findOne(id: number) {
     return await this.prisma.user.findUnique({
-      where: { id },
+      where: { id: id },
       include: {
         permissions: {
           select: {

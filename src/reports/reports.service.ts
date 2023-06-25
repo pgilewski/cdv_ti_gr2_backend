@@ -6,14 +6,15 @@ import { CreateTaskHourDto } from '../taskhour/dto/task-hour.dto';
 import { CreateWorkDayDto } from './dto/create-workday-dto';
 // import { UpdateTaskHourDto } from './dto/update-taskhour-dto';
 // import { UpdateWorkDayDto } from './dto/update-workday-dto';
-import { Prisma, WorkDay } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { UpdateWorkDayDto } from './dto/update-workday-dto';
+import { WorkDay } from 'src/types';
 
 @Injectable()
 export class ReportsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getWorkDay(day?: string, userId?: number): Promise<WorkDay> {
+  async getWorkDay(day?: string, userId?: number): Promise<any> {
     const whereClause: Prisma.WorkDayWhereInput = {};
 
     if (day) {
@@ -23,7 +24,6 @@ export class ReportsService {
     if (userId) {
       whereClause.userId = Number(userId);
     }
-    console.log(whereClause);
 
     return this.prisma.workDay.findFirst({
       where: whereClause,
@@ -43,6 +43,7 @@ export class ReportsService {
           },
         },
         comments: true,
+        user: true,
       },
     });
   }
@@ -93,7 +94,37 @@ export class ReportsService {
       },
     });
   }
+  async getMonthly(month?: string, userId?: number): Promise<WorkDay[]> {
+    const whereClause: Prisma.WorkDayWhereInput = {};
 
+    if (month) {
+      const startDate = new Date(`${month}-01T00:00:00.000Z`); // beginning of the month
+      const endDate = new Date(startDate);
+      endDate.setMonth(endDate.getMonth() + 1); // move to the next month
+      whereClause.date = {
+        gte: startDate.toISOString().substring(0, 10), // format as YYYY-MM-DD
+        lt: endDate.toISOString().substring(0, 10), // format as YYYY-MM-DD
+      };
+    }
+
+    if (userId) {
+      whereClause.userId = Number(userId);
+    }
+
+    return this.prisma.workDay.findMany({
+      where: whereClause,
+      orderBy: {
+        date: 'asc',
+      },
+      include: {
+        taskHours: {
+          include: {
+            task: true,
+          },
+        },
+      },
+    });
+  }
   // async updateTaskHour(id: number, data: UpdateTaskHourDto) {
   //   return await this.prisma.taskHour.update({
   //     where: { id },

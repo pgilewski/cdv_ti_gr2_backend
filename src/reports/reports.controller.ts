@@ -40,15 +40,31 @@ export class ReportsController {
     return await this.reportsService.getWorkDay(day, userId);
   }
 
+  // /reports/monthly?date=2021-05&user=1
   @Get('monthly')
   async getMonthlyReport(
-    @Query('date') date: string | undefined,
+    @Query('month') month: string | undefined,
     @Query('user') user: string | undefined,
     @Req() req: any,
   ) {
     const userId = user || req.user.id;
     console.log(user, req);
-    return await this.reportsService.getWorkDay(date, userId);
+    const workDays = await this.reportsService.getMonthly(month, userId);
+    const workDaysCount = workDays.length;
+
+    let totalMinutes = 0;
+    let workDaysReviewedCount = 0;
+
+    for (const workDay of workDays) {
+      if (workDay.isReviewed) {
+        workDaysReviewedCount++;
+      }
+      for (const taskHour of workDay.taskHours || []) {
+        totalMinutes += taskHour.duration || 0;
+      }
+    }
+
+    return { workDays, workDaysCount, totalMinutes, workDaysReviewedCount };
   }
 
   @Roles(Role.Moderator)

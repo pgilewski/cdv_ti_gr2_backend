@@ -18,15 +18,17 @@ https://developer.redis.com/create/windows/
 
 ## Running the app
 
-```bash
-# run api
-$ npm run dev
-
 # run redis-server windows
+
 $ redis-cli
 
 # run redis-server mac os
+
 $ redis-server
+
+```bash
+# run api
+$ npm run dev
 
 ```
 
@@ -37,4 +39,5 @@ $ redis-server
 $ npx prisma generate
 
 ```
+
 # cdv_ti_gr2_backend

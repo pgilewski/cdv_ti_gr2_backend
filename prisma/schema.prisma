@@ -20,51 +20,51 @@ model User {
   firstName   String?
   lastName    String?
 
-  workDays    WorkDay[]
-  taskHours   TaskHour[]
-  comments    Comment[]
+  workDays     WorkDay[]
+  taskHours    TaskHour[]
+  comments     Comment[]
   userProjects UserProject[]
-  userTasks   UserTask[]
+  userTasks    UserTask[]
 }
 
 model UserProject {
-  userId   Int
-  user     User   @relation(fields: [userId], references: [id])
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id])
   projectId Int
-  project  Project @relation(fields: [projectId], references: [id])
+  project   Project @relation(fields: [projectId], references: [id])
 
   @@id([userId, projectId])
 }
 
 model UserTask {
-  userId  Int
-  user    User  @relation(fields: [userId], references: [id])
-  taskId  Int
-  task    Task  @relation(fields: [taskId], references: [id])
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+  taskId Int
+  task   Task @relation(fields: [taskId], references: [id])
 
   @@id([userId, taskId])
 }
 
-  model Permission {
-    id    Int              @id @default(autoincrement())
-    name  String
-    users UserPermission[]
-  }
+model Permission {
+  id    Int              @id @default(autoincrement())
+  name  String
+  users UserPermission[]
+}
 
-  model UserPermission {
-    permissionId Int
-    permission   Permission  @relation(fields: [permissionId], references: [id])
-    User   User @relation(fields: [userId], references: [id])
-    userId Int
+model UserPermission {
+  permissionId Int
+  permission   Permission @relation(fields: [permissionId], references: [id])
+  User         User       @relation(fields: [userId], references: [id])
+  userId       Int
 
-    @@id([userId, permissionId])
-  }
+  @@id([userId, permissionId])
+}
 
-  enum Role {
-    Pracownik
-    Moderator
-    Administrator
-  }
+enum Role {
+  Pracownik
+  Moderator
+  Administrator
+}
 
 model TaskHour {
   id        Int      @id @default(autoincrement())
@@ -75,10 +75,10 @@ model TaskHour {
   duration  Int
   note      String?
 
-  task         Task        @relation(fields: [taskId], references: [id])
-  workDay      WorkDay?    @relation(fields: [workDayId], references: [id])
-  workDayId    Int?
-  user   User @relation(fields: [userId], references: [id])
+  task      Task     @relation(fields: [taskId], references: [id])
+  workDay   WorkDay? @relation(fields: [workDayId], references: [id])
+  workDayId Int?
+  user      User     @relation(fields: [userId], references: [id])
   userId    Int
 }
 
@@ -90,9 +90,9 @@ model Comment {
   type      String
 
   workdayId Int
-  workday      WorkDay     @relation(fields: [workdayId], references: [id])
+  workday   WorkDay @relation(fields: [workdayId], references: [id])
   userId    Int
-  user   User @relation(fields: [userId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
 }
 
 model WorkDay {
@@ -104,9 +104,9 @@ model WorkDay {
   isReviewed Boolean  @default(false)
   reviewedBy Int?
 
-  taskHours        TaskHour[]
-  comments     Comment[]
-  user   User @relation(fields: [userId], references: [id])
+  taskHours TaskHour[]
+  comments  Comment[]
+  user      User       @relation(fields: [userId], references: [id])
 
   @@unique([userId, date])
 }
@@ -130,7 +130,7 @@ model Task {
   name        String
   description String
 
-  taskHours   TaskHour[]
-  project     Project    @relation(fields: [projectId], references: [id])
-  userTasks   UserTask[]
+  taskHours TaskHour[]
+  project   Project    @relation(fields: [projectId], references: [id])
+  userTasks UserTask[]
 }

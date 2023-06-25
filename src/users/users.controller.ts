@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 
 import { UsersService } from './users.service';
@@ -26,9 +27,14 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @Get('emails-and-ids')
+  getEmailsAndIds(@Query('email') email: string) {
+    return this.usersService.getUsersEmailsAndIds(email);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+    return this.usersService.findOne(Number(id));
   }
 
   @Patch(':id')
