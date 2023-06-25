@@ -38,7 +38,7 @@ import { PoliciesGuard } from './authorization/guards/policies.guard';
     },
     {
       provide: APP_GUARD,
-      useClass: PoliciesGuard, // PermissionsGuard, //RolesGuard,
+      useClass: RolesGuard, // PermissionsGuard, //RolesGuard,
     },
     AccessTokenGuard,
     RefreshTokenIdsStorage,

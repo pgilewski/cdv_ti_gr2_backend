@@ -67,7 +67,6 @@ export class ReportsController {
     return { workDays, workDaysCount, totalMinutes, workDaysReviewedCount };
   }
 
-  @Roles(Role.Moderator)
   @Post('daily')
   create(@Body() createWorkDayData: CreateWorkDayDto) {
     return this.reportsService.createWorkDay(createWorkDayData);
