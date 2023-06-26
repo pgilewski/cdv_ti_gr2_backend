@@ -35,7 +35,6 @@ export class ReportsController {
   ) {
     // jezeli zostanie podany user to zwracamy jego raporty jak nie to zwracamy raporty zalogowanego usera
     const userId = user || req.user.id;
-    console.log(day, userId);
     // return user;
     return await this.reportsService.getWorkDay(day, userId);
   }
@@ -44,11 +43,10 @@ export class ReportsController {
   @Get('monthly')
   async getMonthlyReport(
     @Query('month') month: string | undefined,
-    @Query('user') user: string | undefined,
+    @Query('userId') user: string | undefined,
     @Req() req: any,
   ) {
     const userId = user || req.user.id;
-    console.log(user, req);
     const workDays = await this.reportsService.getMonthly(month, userId);
     const workDaysCount = workDays.length;
 
@@ -86,7 +84,6 @@ export class ReportsController {
 
   // @Get()
   // findAll(@ActiveUser() activeUser: ActiveUserData) {
-  //   console.log(activeUser);
   //   return this.reportsService.findAll();
   // }
 }

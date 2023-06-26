@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
 
-import { CreateTaskHourDto } from '../taskhour/dto/task-hour.dto';
 import { CreateWorkDayDto } from './dto/create-workday-dto';
 // import { UpdateTaskHourDto } from './dto/update-taskhour-dto';
 // import { UpdateWorkDayDto } from './dto/update-workday-dto';
 import { Prisma } from '@prisma/client';
 import { UpdateWorkDayDto } from './dto/update-workday-dto';
 import { WorkDay } from 'src/types';
+import { CreateTaskHourDto } from 'src/taskhour/dto/task-hour.dto';
 
 @Injectable()
 export class ReportsService {
@@ -42,7 +42,14 @@ export class ReportsService {
             },
           },
         },
-        comments: true,
+        comments: {
+          select: {
+            createdAt: true,
+            content: true,
+            type: true,
+            user: true,
+          },
+        },
         user: true,
       },
     });

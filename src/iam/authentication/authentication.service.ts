@@ -35,8 +35,6 @@ export class AuthenticationService {
   ) {}
 
   async signUp(signUpDto: SignUpDto) {
-    console.error(signUpDto);
-
     try {
       const user = {
         email: signUpDto.email,

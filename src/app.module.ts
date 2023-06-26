@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { CommentModule } from './comments/comment.module';
 import { IamModule } from './iam/iam.module';
 import { ProjectModule } from './projects/project.module';
 
@@ -19,6 +20,7 @@ import { UsersModule } from './users/users.module';
     ProjectModule,
     TaskModule,
     TaskHourModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
