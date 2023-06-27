@@ -36,7 +36,7 @@ export class CommentService {
   }
 
   async deleteComment(id: string): Promise<any> {
-    const comment = await this.prisma.taskHour.findUnique({
+    const comment = await this.prisma.comment.findUnique({
       where: { id: +id },
     });
 

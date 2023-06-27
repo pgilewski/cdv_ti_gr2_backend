@@ -44,6 +44,7 @@ export class ReportsService {
         },
         comments: {
           select: {
+            id: true,
             createdAt: true,
             content: true,
             type: true,
